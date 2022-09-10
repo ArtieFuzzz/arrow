@@ -27,6 +27,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "arrow"
+version = "0.1.0"
+dependencies = [
+ "color-eyre",
+ "once_cell",
+ "rand",
+ "reqwest",
+ "rocket",
+ "serde",
+ "serde_json",
+ "winres",
+]
+
+[[package]]
 name = "async-stream"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1282,17 +1296,6 @@ dependencies = [
  "redox_syscall",
  "remove_dir_all",
  "winapi",
-]
-
-[[package]]
-name = "template"
-version = "0.1.0"
-dependencies = [
- "color-eyre",
- "once_cell",
- "reqwest",
- "rocket",
- "winres",
 ]
 
 [[package]]

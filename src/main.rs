@@ -1,10 +1,12 @@
 #[macro_use]
 extern crate rocket;
 
+mod catcher;
 mod fairings;
 mod lib;
 mod routes;
-mod catcher;
+
+use std::net::IpAddr;
 
 use fairings::x_headers;
 use once_cell::sync::Lazy;
@@ -25,6 +27,7 @@ fn rocket() -> _ {
         .enable(Referrer::NoReferrer);
 
     let config = Config {
+        address: String::from("0.0.0.0").parse::<IpAddr>().unwrap(),
         port: 8080,
         keep_alive: 60 * 60,
         ..Config::default()
@@ -34,11 +37,15 @@ fn rocket() -> _ {
         .configure(config)
         .attach(armor)
         .attach(x_headers::XHeaders::default())
-        .register("/", catchers![
-          catcher::not_found,
-          catcher::internal_error,
-          catcher::unauthorized,
-          catcher::forbidden,
-          catcher::broken_request
-      ])
+        .register(
+            "/",
+            catchers![
+                catcher::not_found,
+                catcher::internal_error,
+                catcher::unauthorized,
+                catcher::forbidden,
+                catcher::broken_request
+            ],
+        )
+        .mount("/image", routes![routes::image::tenor_gif])
 }
