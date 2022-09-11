@@ -28,7 +28,7 @@ dependencies = [
 
 [[package]]
 name = "arrow"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "color-eyre",
  "once_cell",
@@ -1048,6 +1048,7 @@ dependencies = [
  "rocket_codegen",
  "rocket_http",
  "serde",
+ "serde_json",
  "state",
  "tempfile",
  "time",

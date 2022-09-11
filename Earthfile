@@ -1,6 +1,6 @@
 VERSION 0.6
 FROM rust:alpine
-WORKDIR /template
+WORKDIR /arrow
 
 # Install packages and CLI dependencies here
 install:

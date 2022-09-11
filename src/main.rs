@@ -48,4 +48,5 @@ fn rocket() -> _ {
             ],
         )
         .mount("/image", routes![routes::image::tenor_gif])
+        .mount("/kv", routes![routes::kv::kv_get, routes::kv::kv_post])
 }
