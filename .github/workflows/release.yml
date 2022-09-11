@@ -84,8 +84,8 @@ jobs:
             exit
           fi
 
-          mv release/x86_64-unknown-linux-gnu/template release/x86_64-unknown-linux-gnu/x86_64-unknown-linux-musl
-          mv release/x86_64-pc-windows-gnu/template.exe release/x86_64-pc-windows-gnu/x86_64-pc-windows-gnu.exe
+          mv release/x86_64-unknown-linux-gnu/arrow release/x86_64-unknown-linux-gnu/x86_64-unknown-linux-musl
+          mv release/x86_64-pc-windows-gnu/arrow.exe release/x86_64-pc-windows-gnu/x86_64-pc-windows-gnu.exe
 
           hub release create --commitish '${{ github.sha }}' \
             --message "$VERSION" \
