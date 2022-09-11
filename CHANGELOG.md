@@ -2,17 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.0] - 2022-09-11
+## [0.2.0] - 2022-09-11
 
 ### Features
 
 - Push initial files
 - Add tenor route
+- Key-Value route
 
 ### Miscellaneous Tasks
 
 - Update README
 - 1.0.0
+- 0.1.0
 - 0.1.0
 
 ### Ci
