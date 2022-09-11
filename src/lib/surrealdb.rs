@@ -1,6 +1,7 @@
 use super::types;
 use crate::HTTP;
 use color_eyre::{eyre::eyre, Result};
+use reqwest::RequestBuilder;
 use std::env;
 
 fn get_info() -> Result<(String, String, String)> {
@@ -29,15 +30,19 @@ fn get_info() -> Result<(String, String, String)> {
     Ok((db_url, username, password))
 }
 
-pub async fn get_kv(key: &str) -> Result<String> {
-    let db = get_info()?;
+fn base() -> RequestBuilder {
+    let auth = get_info().unwrap();
 
-    let res: _ = HTTP
-        .post(db.0)
-        .basic_auth(db.1, Some(db.2))
+    return HTTP
+        .post(auth.0)
+        .basic_auth(auth.1, Some(auth.2))
         .header("NS", "default")
         .header("DB", "default")
-        .header("Content-Type", "application/json")
+        .header("Content-Type", "application/json");
+}
+
+pub async fn get_kv(key: &str) -> Result<String> {
+    let res: _ = base()
         .body(format!("SELECT * FROM kv WHERE key = \"{key}\""))
         .send()
         .await?
@@ -48,14 +53,7 @@ pub async fn get_kv(key: &str) -> Result<String> {
 }
 
 pub async fn set_kv(key: &str, value: &str) -> Result<String> {
-    let db = get_info()?;
-
-    let res: _ = HTTP
-        .post(db.0)
-        .basic_auth(db.1, Some(db.2))
-        .header("NS", "default")
-        .header("DB", "default")
-        .header("Content-Type", "application/json")
+    let res: _ = base()
         .body(format!("CREATE kv SET key = {key}, value = {value}"))
         .send()
         .await?
