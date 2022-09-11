@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.40] - 2022-09-11
+## [0.4.0] - 2022-09-11
 
 ### Features
 
@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - 0.1.0
 - 0.2.0
 - Fix release.sh
+- 0.40
 
 ### Refactor
 
