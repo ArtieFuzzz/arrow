@@ -2,13 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.0] - 2022-09-11
+## [0.40] - 2022-09-11
 
 ### Features
 
 - Push initial files
 - Add tenor route
 - Key-Value route
+- Add new Key-Value routes
 
 ### Miscellaneous Tasks
 
@@ -16,6 +17,12 @@ All notable changes to this project will be documented in this file.
 - 1.0.0
 - 0.1.0
 - 0.1.0
+- 0.2.0
+- Fix release.sh
+
+### Refactor
+
+- Reduce duplication
 
 ### Ci
 
