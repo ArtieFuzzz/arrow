@@ -1,8 +1,9 @@
 use crate::lib::{
-    surrealdb::{get_kv, set_kv},
-    KVMessage,
+    surrealdb::{delete_kv, get_kv, set_kv, update_kv},
+    KVMessage, Message,
 };
 use rocket::{http::Status, response::status, serde::json::Json};
+use serde_json::{Value, json};
 
 #[post("/<key>?<value>")]
 pub async fn kv_post<'a>(key: &'a str, value: &'a str) -> status::Custom<Json<KVMessage>> {
@@ -17,9 +18,9 @@ pub async fn kv_post<'a>(key: &'a str, value: &'a str) -> status::Custom<Json<KV
     )
 }
 
-#[get("/<key>")]
-pub async fn kv_get<'a>(key: &'a str) -> status::Custom<Json<KVMessage>> {
-    let res = get_kv(key).await.unwrap();
+#[patch("/<key>?<value>")]
+pub async fn kv_update<'a>(key: &'a str, value: &'a str) -> status::Custom<Json<KVMessage>> {
+    let res = update_kv(key, value).await.unwrap();
 
     status::Custom(
         Status::Ok,
@@ -27,5 +28,45 @@ pub async fn kv_get<'a>(key: &'a str) -> status::Custom<Json<KVMessage>> {
             key: key.to_owned(),
             value: res,
         }),
+    )
+}
+
+#[delete("/<key>")]
+pub async fn kv_delete<'a>(key: &'a str) -> status::Custom<Json<Message>> {
+    let _ = match delete_kv(key).await {
+        Ok(v) => v,
+        Err(_) => {
+            return status::Custom(
+                Status::NotFound,
+                Json(Message {
+                    message: "The key cannot be found in the database...".to_string(),
+                }),
+            )
+        }
+    };
+
+    status::Custom(
+        Status::Ok,
+        Json(Message {
+            message: "Deleted".to_string(),
+        }),
+    )
+}
+
+#[get("/<key>")]
+pub async fn kv_get<'a>(key: &'a str) -> status::Custom<Json<Value>> {
+    let res = match get_kv(key).await {
+      Ok(v) => v,
+      Err(_) => {
+          return status::Custom(
+              Status::NotFound,
+              Json(json!({ "message": "Key does not exist" })),
+          )
+      }
+    };
+
+    status::Custom(
+        Status::Ok,
+        Json(json!({ "key": key.to_string(), "value": res})),
     )
 }

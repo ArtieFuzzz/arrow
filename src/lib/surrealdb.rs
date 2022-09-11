@@ -54,11 +54,32 @@ pub async fn get_kv(key: &str) -> Result<String> {
 
 pub async fn set_kv(key: &str, value: &str) -> Result<String> {
     let res: _ = base()
-        .body(format!("CREATE kv SET key = {key}, value = {value}"))
+        .body(format!("CREATE kv SET key = \"{key}\", value = {value}"))
         .send()
         .await?
         .json::<types::KeyValue>()
         .await?;
 
     Ok(res[0].result[0].value.clone())
+}
+pub async fn delete_kv(key: &str) -> Result<String> {
+  let res: _ = base()
+      .body(format!("DELETE kv WHERE key = \"{key}\""))
+      .send()
+      .await?
+      .json::<types::KeyValue>()
+      .await?;
+
+  Ok(res[0].result[0].value.clone())
+}
+
+pub async fn update_kv(key: &str, value: &str) -> Result<String> {
+  let res: _ = base()
+      .body(format!("UPDATE kv SET value = {value} WHERE key = \"{key}\""))
+      .send()
+      .await?
+      .json::<types::KeyValue>()
+      .await?;
+
+  Ok(res[0].result[0].value.clone())
 }

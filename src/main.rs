@@ -47,6 +47,15 @@ fn rocket() -> _ {
                 catcher::broken_request
             ],
         )
+        .mount("/", routes![routes::root])
         .mount("/image", routes![routes::image::tenor_gif])
-        .mount("/kv", routes![routes::kv::kv_get, routes::kv::kv_post])
+        .mount(
+            "/kv",
+            routes![
+                routes::kv::kv_get,
+                routes::kv::kv_post,
+                routes::kv::kv_delete,
+                routes::kv::kv_update
+            ],
+        )
 }
