@@ -4,6 +4,8 @@ use color_eyre::{eyre::eyre, Result};
 use reqwest::RequestBuilder;
 use std::env;
 
+// TODO: Fix `internal_error` when db responds with an empty result (Cannot be found)
+
 fn get_info() -> Result<(String, String, String)> {
     // skipcq: RS-W1015
     let db_url = match env::var("ARROW_SURREALDB_URL") {
