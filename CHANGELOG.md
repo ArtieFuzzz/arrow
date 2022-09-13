@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.4.0] - 2022-09-11
+## [0.5.0] - 2022-09-13
+
+### Bug Fixes
+
+- Fix `internal_error` on KV routes
 
 ### Features
 
@@ -20,6 +24,8 @@ All notable changes to this project will be documented in this file.
 - 0.2.0
 - Fix release.sh
 - 0.40
+- 0.4.0
+- Add todo
 
 ### Refactor
 
