@@ -3,7 +3,7 @@ use crate::lib::{
     KVMessage, Message,
 };
 use rocket::{http::Status, response::status, serde::json::Json};
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 #[post("/<key>?<value>")]
 pub async fn kv_post<'a>(key: &'a str, value: &'a str) -> status::Custom<Json<KVMessage>> {
@@ -33,7 +33,7 @@ pub async fn kv_update<'a>(key: &'a str, value: &'a str) -> status::Custom<Json<
 
 #[delete("/<key>")]
 pub async fn kv_delete<'a>(key: &'a str) -> status::Custom<Json<Message>> {
-    let _ = match delete_kv(key).await {
+    let deleted = match delete_kv(key).await {
         Ok(v) => v,
         Err(_) => {
             return status::Custom(
@@ -44,6 +44,15 @@ pub async fn kv_delete<'a>(key: &'a str) -> status::Custom<Json<Message>> {
             )
         }
     };
+
+    if !deleted {
+        return status::Custom(
+            Status::Ok,
+            Json(Message {
+                message: "Key cannot be found...".to_string(),
+            }),
+        );
+    }
 
     status::Custom(
         Status::Ok,
@@ -56,13 +65,13 @@ pub async fn kv_delete<'a>(key: &'a str) -> status::Custom<Json<Message>> {
 #[get("/<key>")]
 pub async fn kv_get<'a>(key: &'a str) -> status::Custom<Json<Value>> {
     let res = match get_kv(key).await {
-      Ok(v) => v,
-      Err(_) => {
-          return status::Custom(
-              Status::NotFound,
-              Json(json!({ "message": "Key does not exist" })),
-          )
-      }
+        Ok(v) => v,
+        Err(_) => {
+            return status::Custom(
+                Status::NotFound,
+                Json(json!({ "message": "Key does not exist" })),
+            )
+        }
     };
 
     status::Custom(

@@ -4,8 +4,6 @@ use color_eyre::{eyre::eyre, Result};
 use reqwest::RequestBuilder;
 use std::env;
 
-// TODO: Fix `internal_error` when db responds with an empty result (Cannot be found)
-
 fn get_info() -> Result<(String, String, String)> {
     // skipcq: RS-W1015
     let db_url = match env::var("ARROW_SURREALDB_URL") {
@@ -44,18 +42,22 @@ fn base() -> RequestBuilder {
 }
 
 pub async fn get_kv(key: &str) -> Result<String> {
-    let res: _ = base()
+    let res = base()
         .body(format!("SELECT * FROM kv WHERE key = \"{key}\""))
         .send()
         .await?
         .json::<types::KeyValue>()
         .await?;
 
+    if res[0].result.is_empty() {
+      return Err(eyre!("Key is non-existent"))
+    }
+
     Ok(res[0].result[0].value.clone())
 }
 
 pub async fn set_kv(key: &str, value: &str) -> Result<String> {
-    let res: _ = base()
+    let res = base()
         .body(format!("CREATE kv SET key = \"{key}\", value = {value}"))
         .send()
         .await?
@@ -64,24 +66,30 @@ pub async fn set_kv(key: &str, value: &str) -> Result<String> {
 
     Ok(res[0].result[0].value.clone())
 }
-pub async fn delete_kv(key: &str) -> Result<String> {
-  let res: _ = base()
-      .body(format!("DELETE kv WHERE key = \"{key}\""))
-      .send()
-      .await?
-      .json::<types::KeyValue>()
-      .await?;
+pub async fn delete_kv(key: &str) -> Result<bool> {
+    let res: _ = base()
+        .body(format!("DELETE kv WHERE key = \"{key}\" RETURN BEFORE"))
+        .send()
+        .await?
+        .json::<types::KeyValue>()
+        .await?;
 
-  Ok(res[0].result[0].value.clone())
+    if res[0].result.is_empty() {
+        return Ok(false)
+    }
+
+    Ok(true)
 }
 
 pub async fn update_kv(key: &str, value: &str) -> Result<String> {
-  let res: _ = base()
-      .body(format!("UPDATE kv SET value = {value} WHERE key = \"{key}\""))
-      .send()
-      .await?
-      .json::<types::KeyValue>()
-      .await?;
+    let res = base()
+        .body(format!(
+            "UPDATE kv SET value = {value} WHERE key = \"{key}\""
+        ))
+        .send()
+        .await?
+        .json::<types::KeyValue>()
+        .await?;
 
-  Ok(res[0].result[0].value.clone())
+    Ok(res[0].result[0].value.clone())
 }
